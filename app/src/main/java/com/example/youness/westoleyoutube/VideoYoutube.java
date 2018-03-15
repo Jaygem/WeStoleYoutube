@@ -1,10 +1,12 @@
 package com.example.youness.westoleyoutube;
 
+
+
 /**
  * Created by youness on 16/02/2018.
  */
 
-public class VideoYoutube {
+public class VideoYoutube{
     private VideoId id;
     private VideoSnippet snippet;
 

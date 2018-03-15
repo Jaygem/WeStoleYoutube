@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WeStoleYoutube.iml" filepath="$PROJECT_DIR$/WeStoleYoutube.iml" />
-      <module fileurl="file://C:\Users\SIMEA\AndroidStudioProjects\WeStoleYoutube\WeStoleYoutube.iml" filepath="C:\Users\SIMEA\AndroidStudioProjects\WeStoleYoutube\WeStoleYoutube.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\SIMEA\AndroidStudioProjects\WeStoleYoutube\app\app.iml" filepath="C:\Users\SIMEA\AndroidStudioProjects\WeStoleYoutube\app\app.iml" />
     </modules>
   </component>
 </project>

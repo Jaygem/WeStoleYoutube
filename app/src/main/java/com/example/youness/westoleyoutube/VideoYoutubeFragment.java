@@ -6,16 +6,22 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.youness.westoleyoutube.dummy.DummyContent;
 import com.example.youness.westoleyoutube.dummy.DummyContent.DummyItem;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * A fragment representing a list of Items.
@@ -30,8 +36,8 @@ public class VideoYoutubeFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private List<VideoYoutube> videos;
-    private Call<VideoYoutube> JsonResult;
+    private ArrayList<VideoYoutube> vids;
+    private Call<VideoYoutube> request;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -64,9 +70,8 @@ public class VideoYoutubeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_videoyoutube_list, container, false);
         //Receive the bundle
+        request = ((MainActivity)this.getActivity()).videos;
 
-        Bundle bundle = this.getArguments();
-        //this.JsonResult = bundle.getBundle("bundle");
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();

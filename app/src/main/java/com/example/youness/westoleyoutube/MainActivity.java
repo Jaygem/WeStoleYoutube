@@ -18,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
+
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -27,9 +30,9 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private Button searchButton;
-    private EditText keywords;
+    private SearchView keywords;
     private String exampleRequestApiYoutube = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCXBz1_gDwtINXPED9BMN6As3RUg5uU5z0&q=DissidiaNt";
-
+    public Call<VideoYoutube> videos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +53,12 @@ public class MainActivity extends AppCompatActivity
                 onSearchRequested();
             }
         });
-        searchButton = findViewById(R.id.SearchButton);
-        keywords = findViewById(R.id.SearchKeyWords);
+
+        keywords = findViewById(R.id.SearchField);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LaunchSearch(keywords.getText().toString().replaceAll(" ","+"));
+                LaunchSearch(keywords.getQuery().toString().replaceAll(" ","+"));
             }
         });
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,9 +134,10 @@ public class MainActivity extends AppCompatActivity
                 .baseUrl("https://www.googleapis.com/youtube/v3/")
                 .build();
         YoutubeService service = retrofit.create(YoutubeService.class);
-        Call<VideoYoutube> videos = service.getVideos("",keywords,"",50);
+        videos = service.getVideos("",keywords,"",50);
         Bundle bundle = new Bundle();
-        bundle.putBundle("bundle",bundle);
+        //Gson data = new Gson();
+        //bundle.putString("The call", data.toJson(videos));
         VideoYoutubeFragment vids = new VideoYoutubeFragment();
         vids.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
