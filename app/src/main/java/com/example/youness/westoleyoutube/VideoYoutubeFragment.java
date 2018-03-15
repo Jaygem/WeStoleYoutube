@@ -11,10 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.youness.westoleyoutube.dummy.DummyContent;
-import com.example.youness.westoleyoutube.dummy.DummyContent.DummyItem;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class VideoYoutubeFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private ArrayList<VideoYoutube> vids;
-    private Call<VideoYoutube> request;
+    private Call<YoutubeRequest> request;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,7 +70,21 @@ public class VideoYoutubeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_videoyoutube_list, container, false);
         //Receive the bundle
         request = ((MainActivity)this.getActivity()).videos;
+        vids = new ArrayList<VideoYoutube>();
+        request.enqueue(new Callback<YoutubeRequest>() {
+            @Override
+            public void onResponse(Call<YoutubeRequest> call, Response<YoutubeRequest> response) {
+                Log.v("@@@Response",""+response.toString());
+                Log.v("data",""+response.body().getItems().toString());
+                //vids.add(response.body().getItems().get(0));
 
+            }
+
+            @Override
+            public void onFailure(Call<YoutubeRequest> call, Throwable t) {
+                Log.v("@@@Response",""+t.toString());
+            }
+        });
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -81,7 +94,7 @@ public class VideoYoutubeFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyVideoYoutubeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyVideoYoutubeRecyclerViewAdapter(vids, mListener));
         }
         return view;
     }
@@ -107,6 +120,6 @@ public class VideoYoutubeFragment extends Fragment {
 
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(VideoYoutube item);
     }
 }

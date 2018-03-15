@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.youness.westoleyoutube.VideoYoutubeFragment.OnListFragmentInteractionListener;
-import com.example.youness.westoleyoutube.dummy.DummyContent.DummyItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class MyVideoYoutubeRecyclerViewAdapter extends RecyclerView.Adapter<MyVideoYoutubeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<VideoYoutube> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyVideoYoutubeRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyVideoYoutubeRecyclerViewAdapter(ArrayList<VideoYoutube> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -36,8 +36,8 @@ public class MyVideoYoutubeRecyclerViewAdapter extends RecyclerView.Adapter<MyVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).getDescription());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,14 +53,17 @@ public class MyVideoYoutubeRecyclerViewAdapter extends RecyclerView.Adapter<MyVi
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        if(mValues == null)
+            return 0;
+        else
+            return mValues.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public VideoYoutube mItem;
 
         public ViewHolder(View view) {
             super(view);

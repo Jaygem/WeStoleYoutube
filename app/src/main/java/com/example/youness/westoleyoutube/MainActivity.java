@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,21 +21,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, VideoYoutubeFragment.OnListFragmentInteractionListener {
     private Button searchButton;
     private SearchView keywords;
     private String exampleRequestApiYoutube = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCXBz1_gDwtINXPED9BMN6As3RUg5uU5z0&q=DissidiaNt";
-    public Call<VideoYoutube> videos;
+    public Call<YoutubeRequest> videos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +46,9 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            Log.i("Some logs","THE SEARCH HAS BEEN MADE");
             String query = intent.getStringExtra(SearchManager.QUERY);
-            LaunchSearch(query);
+
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -54,13 +59,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        keywords = findViewById(R.id.SearchField);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LaunchSearch(keywords.getQuery().toString().replaceAll(" ","+"));
-            }
-        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -69,6 +68,32 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i("Status Youness","Search Succeeded");
+                LaunchSearch(query);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.i("Status Youness","Search Failed");
+                return false;
+            }
+        });
+
+        return true;
     }
 
     @Override
@@ -81,12 +106,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -96,9 +116,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -130,21 +148,31 @@ public class MainActivity extends AppCompatActivity
     public void LaunchSearch(final String keywords)
     {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.googleapis.com/youtube/v3/")
-                .build();
-        YoutubeService service = retrofit.create(YoutubeService.class);
-        videos = service.getVideos("",keywords,"",50);
+
+        YoutubeService service = YoutubeService.retrofit.create(YoutubeService.class);
+        videos = service.getVideos("AIzaSyCXBz1_gDwtINXPED9BMN6As3RUg5uU5z0",keywords,"snippet",50);
+
         Bundle bundle = new Bundle();
-        //Gson data = new Gson();
-        //bundle.putString("The call", data.toJson(videos));
+
         VideoYoutubeFragment vids = new VideoYoutubeFragment();
         vids.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
         ft.replace(R.id.ResultFrame, vids);
         ft.commit();
 
 
+
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(VideoYoutube item) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 }
