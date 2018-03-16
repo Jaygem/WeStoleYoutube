@@ -39,6 +39,8 @@ public class VideoYoutubeFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private ArrayList<VideoYoutube> vids;
     private Call<YoutubeRequest> request;
+    private MyVideoYoutubeRecyclerViewAdapter madapter;
+    public RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -74,14 +76,13 @@ public class VideoYoutubeFragment extends Fragment {
         request = ((MainActivity)this.getActivity()).videos;
         vids = new ArrayList<VideoYoutube>();
         Log.d(TAG, "onCreateView: "+request.request().url());
-
         request.enqueue(new Callback<YoutubeRequest>() {
             @Override
             public void onResponse(Call<YoutubeRequest> call, Response<YoutubeRequest> response) {
 
                 vids = response.body().getItems();
-                //vids.add(response.body().getItems().get(0));
-
+                Log.v("the result",response.body().toString());
+                Log.v("the result","Notified");
             }
 
             @Override
@@ -90,24 +91,27 @@ public class VideoYoutubeFragment extends Fragment {
             }
         });
 
-        for(int i = 0; i<vids.size();i++)
-        {
-            Log.i("Videos infos : ", ""+vids.get(i).getDescription());
-        }
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+             recyclerView = (RecyclerView) view;
+
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyVideoYoutubeRecyclerViewAdapter(vids, mListener));
+            madapter = new MyVideoYoutubeRecyclerViewAdapter(vids, mListener);
+            recyclerView.setAdapter(madapter);
         }
+        Refresh();
         return view;
     }
-
+    public void Refresh()
+    {
+        recyclerView.removeViewAt(0);
+        this.madapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onAttach(Context context) {

@@ -19,4 +19,14 @@ public  class YoutubeRequest {
     public ArrayList<VideoYoutube> getItems() {
         return items;
     }
+
+    @Override
+    public String toString() {
+        String toreturn = "";
+        for(int i=0;i<items.size();i++)
+        {
+            toreturn+=items.get(i).getTitle();
+        }
+        return toreturn;
+    }
 }
