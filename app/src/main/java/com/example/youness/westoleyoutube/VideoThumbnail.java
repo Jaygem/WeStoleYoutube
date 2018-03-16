@@ -1,5 +1,6 @@
 package com.example.youness.westoleyoutube;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -12,5 +13,6 @@ public class VideoThumbnail {
     }
 
     @SerializedName("default")
+    @Expose
     private VideoDefaultThumbnail _default;
 }

@@ -25,11 +25,17 @@ import android.widget.EditText;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, VideoYoutubeFragment.OnListFragmentInteractionListener {
@@ -37,12 +43,19 @@ public class MainActivity extends AppCompatActivity
     private SearchView keywords;
     private String exampleRequestApiYoutube = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCXBz1_gDwtINXPED9BMN6As3RUg5uU5z0&q=DissidiaNt";
     public Call<YoutubeRequest> videos;
+    private YoutubeService service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(YoutubeService.Base)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(YoutubeService.class);
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -145,20 +158,22 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private ArrayList<VideoYoutube> vids = new ArrayList<VideoYoutube>();
     public void LaunchSearch(final String keywords)
     {
 
 
-        YoutubeService service = YoutubeService.retrofit.create(YoutubeService.class);
-        videos = service.getVideos("AIzaSyCXBz1_gDwtINXPED9BMN6As3RUg5uU5z0",keywords,"snippet",50);
 
+        videos = this.service.getVideos("AIzaSyCXBz1_gDwtINXPED9BMN6As3RUg5uU5z0",keywords,"snippet",50);
+
+        Log.v("The query is ",videos.toString()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                );
         Bundle bundle = new Bundle();
 
-        VideoYoutubeFragment vids = new VideoYoutubeFragment();
-        vids.setArguments(bundle);
+        VideoYoutubeFragment vidlist = new VideoYoutubeFragment();
+        vidlist.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        ft.replace(R.id.ResultFrame, vids);
+        ft.replace(R.id.ResultFrame, vidlist);
         ft.commit();
 
 

@@ -1,13 +1,19 @@
 package com.example.youness.westoleyoutube;
 
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by youness on 16/02/2018.
  */
 
 public class VideoYoutube{
+    @SerializedName("id")
+    @Expose
     private VideoId id;
+    @SerializedName("snippet")
+    @Expose
     private VideoSnippet snippet;
 
     public String getTitle() {

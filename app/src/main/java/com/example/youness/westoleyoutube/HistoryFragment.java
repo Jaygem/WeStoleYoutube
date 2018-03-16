@@ -6,23 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
+import com.example.youness.westoleyoutube.dummy.DummyContent;
+import com.example.youness.westoleyoutube.dummy.DummyContent.DummyItem;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A fragment representing a list of Items.
@@ -30,27 +21,25 @@ import static android.content.ContentValues.TAG;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class VideoYoutubeFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private ArrayList<VideoYoutube> vids;
-    private Call<YoutubeRequest> request;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public VideoYoutubeFragment() {
+    public HistoryFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static VideoYoutubeFragment newInstance(int columnCount) {
-        VideoYoutubeFragment fragment = new VideoYoutubeFragment();
+    public static HistoryFragment newInstance(int columnCount) {
+        HistoryFragment fragment = new HistoryFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -69,31 +58,8 @@ public class VideoYoutubeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_videoyoutube_list, container, false);
-        //Receive the bundle
-        request = ((MainActivity)this.getActivity()).videos;
-        vids = new ArrayList<VideoYoutube>();
-        Log.d(TAG, "onCreateView: "+request.request().url());
+        View view = inflater.inflate(R.layout.fragment_history_list, container, false);
 
-        request.enqueue(new Callback<YoutubeRequest>() {
-            @Override
-            public void onResponse(Call<YoutubeRequest> call, Response<YoutubeRequest> response) {
-
-                vids = response.body().getItems();
-                //vids.add(response.body().getItems().get(0));
-
-            }
-
-            @Override
-            public void onFailure(Call<YoutubeRequest> call, Throwable t) {
-                Log.v("bad request",""+t.toString());
-            }
-        });
-
-        for(int i = 0; i<vids.size();i++)
-        {
-            Log.i("Videos infos : ", ""+vids.get(i).getDescription());
-        }
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -103,7 +69,7 @@ public class VideoYoutubeFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyVideoYoutubeRecyclerViewAdapter(vids, mListener));
+            recyclerView.setAdapter(new MyHistoryRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
     }
@@ -126,9 +92,18 @@ public class VideoYoutubeFragment extends Fragment {
         mListener = null;
     }
 
-
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(VideoYoutube item);
+        void onListFragmentInteraction(DummyItem item);
     }
 }
